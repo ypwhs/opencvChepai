@@ -44,9 +44,10 @@
             // 
             this.imageBox1.Location = new System.Drawing.Point(13, 44);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(254, 258);
+            this.imageBox1.Size = new System.Drawing.Size(640, 480);
             this.imageBox1.TabIndex = 1;
             this.imageBox1.TabStop = false;
+            this.imageBox1.Click += new System.EventHandler(this.imageBox1_Click);
             // 
             // button1
             // 
@@ -60,11 +61,12 @@
             // 
             // imageBox2
             // 
-            this.imageBox2.Location = new System.Drawing.Point(13, 308);
+            this.imageBox2.Location = new System.Drawing.Point(659, 44);
             this.imageBox2.Name = "imageBox2";
             this.imageBox2.Size = new System.Drawing.Size(255, 120);
             this.imageBox2.TabIndex = 3;
             this.imageBox2.TabStop = false;
+            this.imageBox2.Click += new System.EventHandler(this.imageBox2_Click);
             // 
             // button2
             // 

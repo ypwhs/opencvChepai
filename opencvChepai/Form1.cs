@@ -124,6 +124,8 @@ namespace opencvChepai
             
             Byte[, ,] data = frame.Data;
             Byte[] hist = new Byte[rectangle.Width];
+            
+            //绘制直方图
             Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(rectangle.Width, 255, new Bgr(255d, 255d, 255d));
             Bgr black = new Bgr(0d, 0d, 0d);
             for (int i = 0; i < rectangle.Width; i++)
@@ -133,8 +135,33 @@ namespace opencvChepai
                 {
                     if (data[j+rectangle.Y, i + rectangle.X, 0] > 120) s++;
                 }
-                if(s>5)hist[i] = (Byte)(s);
+                if(s>5)hist[i] = (Byte)(s); //滤除噪声
                 
+            }
+
+            for (int i = 0; i < rectangle.Width; i++)
+            {
+                if (hist[i] > 0)
+                {
+                    int yuzhi = 8;
+                    int k = 0;
+                    for (int j = 0; j < yuzhi && i + j < rectangle.Width; j++)
+                    {
+                        if (hist[i+j] == 0) k = 1;
+                    }
+                    if (k == 0)
+                    {
+                        while (hist[i] > 0) i++;
+                    }
+                    else
+                    {
+                        while (hist[i] > 0)
+                        {
+                            hist[i] = 0;
+                            i++;
+                        }
+                    }
+                }
             }
 
             for (int i = 0; i < rectangle.Width; i++)
@@ -149,9 +176,9 @@ namespace opencvChepai
         private void button2_Click(object sender, EventArgs e)
         {
             a = 1;
-            Image<Bgr, Byte> img = new Image<Bgr, byte>("1.jpg");
-            imageBox1.Image = img.ToBitmap();
-            getBox(img);
+            //Image<Bgr, Byte> img = new Image<Bgr, byte>("1.jpg");
+            //imageBox1.Image = img.ToBitmap();
+            //getBox(img);
 
             if (serialPort1.IsOpen)
             {
@@ -173,11 +200,23 @@ namespace opencvChepai
             }
         }
 
+        int jpg = 1;
         private void button3_Click(object sender, EventArgs e)
         {
-            Image<Bgr, Byte> img = new Image<Bgr, byte>("4.jpg");
+            Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString()+".jpg");
+            if (jpg < 4) jpg++;
             imageBox1.Image = img.ToBitmap();
             getBox(img);
+        }
+
+        private void imageBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void imageBox2_Click(object sender, EventArgs e)
+        {
+
         }
 
     }
