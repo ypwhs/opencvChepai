@@ -42,7 +42,7 @@ namespace opencvChepai
             Application.Idle += new EventHandler(delegate(object sender2, EventArgs e2)
             {
                 img = capture.QueryFrame();
-                imageBox1.Image = img.ToBitmap();
+                camerabox1.Image = img.ToBitmap();
                 if (a > 0)
                 {
                     getBox(img);
@@ -92,9 +92,7 @@ namespace opencvChepai
                     stor);
                 for (; contours != null; contours = contours.HNext)
                 {
-
                     Rectangle box = contours.BoundingRectangle;
-                    
                     Image<Bgr, Byte> test = simage.CopyBlank();
                     test.SetValue(255.0);
                     double whRatio = (double)box.Width / box.Height;
@@ -109,7 +107,7 @@ namespace opencvChepai
                             //box.X += 6;
                             //box.Width -= 12;
                             Image<Gray, Byte> img2 = cut(simage, box);
-                            imageBox2.Image = img2.ToBitmap();
+                            chepaibox1.Image = img2.ToBitmap();
                         }
                     }
                 }
@@ -136,9 +134,15 @@ namespace opencvChepai
                     if (data[j+rectangle.Y, i + rectangle.X, 0] > 120) s++;
                 }
                 if(s>5)hist[i] = (Byte)(s); //滤除噪声
-                
             }
 
+            for (int i = 0; i < rectangle.Height; i++)
+            {
+                for (int j = 0; j < rectangle.Width; j++)
+                {
+
+                }
+            }
             for (int i = 0; i < rectangle.Width; i++)
             {
                 if (hist[i] > 0)
@@ -147,7 +151,7 @@ namespace opencvChepai
                     int k = 0;
                     for (int j = 0; j < yuzhi && i + j < rectangle.Width; j++)
                     {
-                        if (hist[i+j] == 0) k = 1;
+                        if (hist[i + j] == 0) k = 1;
                     }
                     if (k == 0)
                     {
@@ -169,7 +173,8 @@ namespace opencvChepai
                 LineSegment2D line = new LineSegment2D(new Point(i, 255), new Point(i, 255 - hist[i]));
                 imageHist.Draw(line, black, 1);
             }
-            imageBox1.Image = imageHist.ToBitmap();
+            histbox1.Image = imageHist.ToBitmap();
+
             return frame;
         }
 
@@ -205,7 +210,7 @@ namespace opencvChepai
         {
             Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString()+".jpg");
             if (jpg < 4) jpg++;
-            imageBox1.Image = img.ToBitmap();
+            chepaibox1.Image = img.ToBitmap();
             getBox(img);
         }
 
