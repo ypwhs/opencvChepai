@@ -35,82 +35,43 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2008">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2008.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2008.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2010">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2010.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2010.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2012">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2012.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2012.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2013">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2013.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.DebuggerVisualizers.VS2013.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.GPU">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.GPU.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.GPU.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.ML">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.ML.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.ML.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.OCR">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.OCR.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.OCR.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.OpenCL">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.OpenCL.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.OpenCL.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.Stitching">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.Stitching.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.Stitching.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.UI.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.VideoStab">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.CV.VideoStab.dll</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.CV.VideoStab.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.Util">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Emgu.Util.dll</HintPath>
-    </Reference>
-    <Reference Include="Example.CameraCapture">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.CameraCapture.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.FaceDetection">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.FaceDetection.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.HelloWorld">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.HelloWorld.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.LatenSvmDetector">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.LatenSvmDetector.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.LicensePlateRecognition">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.LicensePlateRecognition.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.MotionDetection">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.MotionDetection.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.OCR">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.OCR.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.PedestrianDetection">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.PedestrianDetection.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.PlanarSubdivision">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.PlanarSubdivision.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.ShapeDetection">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.ShapeDetection.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.SURFFeature">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.SURFFeature.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.TrafficSignRecognition">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.TrafficSignRecognition.exe</HintPath>
-    </Reference>
-    <Reference Include="Example.VideoSurveilance">
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\Example.VideoSurveilance.exe</HintPath>
+      <HintPath>C:\Emgu\emgucv-windows-universal 2.4.10.1940\bin\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -118,10 +79,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZedGraph, Version=5.1.5.28844, Culture=neutral, PublicKeyToken=02a83cbd123fcd60, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\Emgu\emgucv-windows-universal-cuda 2.4.10.1940\bin\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
