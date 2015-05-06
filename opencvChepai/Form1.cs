@@ -39,6 +39,12 @@ namespace opencvChepai
         {
             //CvInvoke.cvCreateCameraCapture(2);
             Capture capture = new Capture();
+            capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1280);
+            capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 720);
+            //capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FPS, 60);
+
+            label1.Text = "Width:" + Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_WIDTH)).ToString()
+                + ",Height:" + Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT)).ToString();
             Application.Idle += new EventHandler(delegate(object sender2, EventArgs e2)
             {
                 img = capture.QueryFrame();
@@ -119,10 +125,10 @@ namespace opencvChepai
             var frame = image.Convert<Gray, Byte>();
             frame.ROI = rectangle;
             CvInvoke.cvThreshold(frame, frame, 0, 255, Emgu.CV.CvEnum.THRESH.CV_THRESH_OTSU);
-            
+
             Byte[, ,] data = frame.Data;
             Byte[] hist = new Byte[rectangle.Width];
-            
+
             //绘制直方图
             Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(rectangle.Width, 255, new Bgr(255d, 255d, 255d));
             Bgr black = new Bgr(0d, 0d, 0d);
@@ -131,9 +137,9 @@ namespace opencvChepai
                 int s = 0;
                 for (int j = 0; j < rectangle.Height; j++)
                 {
-                    if (data[j+rectangle.Y, i + rectangle.X, 0] > 120) s++;
+                    if (data[j + rectangle.Y, i + rectangle.X, 0] > 120) s++;
                 }
-                if(s>5)hist[i] = (Byte)(s); //滤除噪声
+                if (s > 5) hist[i] = (Byte)(s); //滤除噪声
             }
 
             for (int i = 0; i < rectangle.Height; i++)
@@ -187,8 +193,8 @@ namespace opencvChepai
 
             if (serialPort1.IsOpen)
             {
-                byte[] data1 = {0xDA, 0xAD, 0x88, 0x27};
-                byte[] data2 = {0xDB, 0xBD};
+                byte[] data1 = { 0xDA, 0xAD, 0x88, 0x27 };
+                byte[] data2 = { 0xDB, 0xBD };
                 String asd = "粤B OK999 ";
                 System.Text.Encoding utf8, gb2312;
                 utf8 = System.Text.Encoding.GetEncoding("utf-8");
@@ -197,8 +203,8 @@ namespace opencvChepai
 
                 byte[] send = new byte[data1.Length + data2.Length + chepai.Length];
                 for (int i = 0; i < data1.Length; i++) send[i] = data1[i];
-                for (int i = 0; i < chepai.Length; i++) send[i+data1.Length] = chepai[i];
-                for (int i = 0; i < data2.Length; i++) send[i + chepai.Length+data1.Length] = data2[i];
+                for (int i = 0; i < chepai.Length; i++) send[i + data1.Length] = chepai[i];
+                for (int i = 0; i < data2.Length; i++) send[i + chepai.Length + data1.Length] = data2[i];
                 for (int i = 0; i < send.Length; i++) textBox1.Text += Convert.ToString(send[i], 16).ToUpper() + " ";
                 serialPort1.Write(send, 0, send.Length);
 
@@ -208,7 +214,7 @@ namespace opencvChepai
         int jpg = 1;
         private void button3_Click(object sender, EventArgs e)
         {
-            Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString()+".jpg");
+            Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString() + ".jpg");
             if (jpg < 4) jpg++;
             chepaibox1.Image = img.ToBitmap();
             getBox(img);
