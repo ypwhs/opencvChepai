@@ -9,7 +9,6 @@ using Emgu.CV;
 using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
-using Emgu.CV.OCR;
 using Emgu.Util;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
@@ -102,42 +101,22 @@ namespace opencvChepai
                     Rectangle box = contours.BoundingRectangle;
                     Image<Bgr, Byte> test = simage.CopyBlank();
                     test.SetValue(255.0);
-                    test.Draw(box, new Bgr(Color.Red), 2);
-                    simage.Draw(box, new Bgr(Color.Red), 2);//CvInvoke.cvNamedWindow("dst");
-                    //CvInvoke.cvShowImage("dst", dst);
-                    //box.X += 6;
-                    //box.Width -= 12;
-                    Image<Gray, Byte> img2 = cut(simage, box);
-                    _ocr = new Tesseract("", "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
-                    ocr(img2);
-                    chepaibox1.Image = img2.ToBitmap();
+                    double whRatio = (double)box.Width / box.Height;
+                    int area = (int)box.Width * box.Height;
+                    if (area > 1000 && area < 10000)
+                    {
+                        if ((3.0 < whRatio && whRatio < 6.0))
+                        {
+                            test.Draw(box, new Bgr(Color.Red), 2);
+                            simage.Draw(box, new Bgr(Color.Red), 2);//CvInvoke.cvNamedWindow("dst");
+                            //CvInvoke.cvShowImage("dst", dst);
+                            //box.X += 6;
+                            //box.Width -= 12;
+                            Image<Gray, Byte> img2 = cut(simage, box);
+                            chepaibox1.Image = img2.ToBitmap();
+                        }
+                    }
                 }
-            }
-        }
-
-        private Tesseract _ocr;
-        public void ocr(Image<Gray, Byte> image)
-        {
-            try{
-               using (Image<Gray, byte> gray = image.Convert<Gray, Byte>())
-               {
-                  _ocr.Recognize(gray);
-                  Tesseract.Charactor[] charactors = _ocr.GetCharactors();
-                  foreach (Tesseract.Charactor c in charactors)
-                  {
-                     //image.Draw(c.Region, drawColor, 1);
-                  }
-
-                  pictureBox1.Image = image.ToBitmap();
-
-                  //String text = String.Concat( Array.ConvertAll(charactors, delegate(Tesseract.Charactor t) { return t.Text; }) );
-                  String text = _ocr.GetText();
-                  textBox1.Text = text;
-               }
-            }
-            catch (Exception exception)
-            {
-               MessageBox.Show(exception.Message);
             }
         }
 
@@ -182,11 +161,11 @@ namespace opencvChepai
                     }
                     if (k == 0)
                     {
-                        while (hist[i] > 0 && i < rectangle.Width) i++;
+                        while (hist[i] > 0) i++;
                     }
                     else
                     {
-                        while (hist[i] > 0 && i < rectangle.Width)
+                        while (hist[i] > 0)
                         {
                             hist[i] = 0;
                             i++;

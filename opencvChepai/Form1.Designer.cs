@@ -46,7 +46,6 @@
             this.histbox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox8 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.camerabox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chepaibox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -221,19 +220,11 @@
             this.label1.TabIndex = 16;
             this.label1.Text = "label1";
             // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(1318, 825);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(520, 35);
-            this.textBox2.TabIndex = 17;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2368, 1324);
-            this.Controls.Add(this.textBox2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox8);
             this.Controls.Add(this.histbox1);
@@ -289,7 +280,6 @@
         private System.Windows.Forms.PictureBox histbox1;
         private System.Windows.Forms.PictureBox pictureBox8;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox2;
     }
 }
 
