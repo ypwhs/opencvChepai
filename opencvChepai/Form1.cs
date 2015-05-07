@@ -57,7 +57,7 @@ namespace opencvChepai
             });
         }
 
-        public void getBox(Image<Bgr, Byte> img)
+        public Rectangle getBox(Image<Bgr, Byte> img)
         {
             Image<Bgr, Byte> simage = img;    //new Image<Bgr, byte>("license-plate.jpg");
             //Image<Bgr, Byte> simage = sizeimage.Resize(400, 300, Emgu.CV.CvEnum.INTER.CV_INTER_NN);
@@ -90,6 +90,7 @@ namespace opencvChepai
             CvInvoke.cvZero(dst);
             //dest.Dilate(10);
             //dest.Erode(5);
+            Rectangle box = new Rectangle(0, 0, 0, 0);
             using (MemStorage stor = new MemStorage())
             {
                 Contour<Point> contours = dest1.FindContours(
@@ -98,63 +99,72 @@ namespace opencvChepai
                     stor);
                 for (; contours != null; contours = contours.HNext)
                 {
-                    Rectangle box = contours.BoundingRectangle;
-                    Image<Bgr, Byte> test = simage.CopyBlank();
-                    test.SetValue(255.0);
+                    box = contours.BoundingRectangle;
+                    //Image<Bgr, Byte> test = simage.CopyBlank();
+                    //test.SetValue(255.0);
                     double whRatio = (double)box.Width / box.Height;
                     int area = (int)box.Width * box.Height;
                     if (area > 1000 && area < 10000)
                     {
-                        if ((3.0 < whRatio && whRatio < 6.0))
+                        if ((3.0 < whRatio && whRatio < 4))
                         {
-                            test.Draw(box, new Bgr(Color.Red), 2);
-                            simage.Draw(box, new Bgr(Color.Red), 2);//CvInvoke.cvNamedWindow("dst");
-                            //CvInvoke.cvShowImage("dst", dst);
-                            //box.X += 6;
-                            //box.Width -= 12;
-                            Image<Gray, Byte> img2 = cut(simage, box);
+                            //test.Draw(box, new Bgr(Color.Red), 2);
+                            //simage.Draw(box, new Bgr(Color.Red), 2);//CvInvoke.cvNamedWindow("dst");
+                            var img2 = cut(img, box);
                             chepaibox1.Image = img2.ToBitmap();
+                            MessageBox.Show(whRatio.ToString());
+                            break;
                         }
                     }
                 }
             }
+            //box.X += 2;
+            //box.Y += 2;
+            //box.Width -= 6;
+            //box.Height -= 6;
+            return box;
         }
 
-        public Image<Gray, Byte> cut(Image<Bgr, byte> image, Rectangle rectangle)
+        public Image<Bgr, Byte> cut(Image<Bgr, byte> image, Rectangle rectangle)
         {
-            var frame = image.Convert<Gray, Byte>();
+            //以矩形裁切图片
+            var frame = image;//.Convert<Gray, Byte>();
             frame.ROI = rectangle;
-            CvInvoke.cvThreshold(frame, frame, 0, 255, Emgu.CV.CvEnum.THRESH.CV_THRESH_OTSU);
+            Image<Bgr, Byte> cutimg = new Image<Bgr, Byte>(rectangle.Width, rectangle.Height, new Bgr(255,255,255));
+            CvInvoke.cvCopy(frame.Ptr, cutimg.Ptr, IntPtr.Zero);
+            return frame;
+        }
 
-            Byte[, ,] data = frame.Data;
-            int[] hist = new int[rectangle.Width];
+        public void hist(Image<Gray, Byte> img){
+            Byte[, ,] data = img.Data;
+            int[] hist = new int[img.Width];
 
             //绘制直方图
-            Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(rectangle.Width, 255, new Bgr(255d, 255d, 255d));
+            Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(img.Width, 255, new Bgr(255d, 255d, 255d));
             Bgr black = new Bgr(0d, 0d, 0d);
-            for (int i = 0; i < rectangle.Width; i++)
+            for (int i = 0; i < img.Width; i++)
             {
                 int s = 0;
-                for (int j = 0; j < rectangle.Height; j++)
+                for (int j = 0; j < img.Height; j++)
                 {
-                    if (data[j + rectangle.Y, i + rectangle.X, 0] > 120) s++;
+                    if (data[j , i, 0] > 120) s++;
                 }
                 if (s > 5) hist[i] = (Byte)(s); //滤除噪声
             }
 
-            for (int i = 0; i < rectangle.Width; i++)
+            for (int i = 0; i < img.Width; i++)
             {
                 if (hist[i] > 0)
                 {
-                    int yuzhi = 8;
+                    int yuzhi = 8; //设定阈值
                     int k = 0;
-                    for (int j = 0; j < yuzhi && i + j < rectangle.Width; j++)
+                    for (int j = 0; j < yuzhi && i + j < img.Width; j++)
                     {
                         if (hist[i + j] == 0) k = 1;
                     }
                     if (k == 0)
                     {
-                        while (hist[i] > 0) i++;
+                        while (hist[i] > 0 && i < img.Width-1) i++;
                     }
                     else
                     {
@@ -167,7 +177,7 @@ namespace opencvChepai
                 }
             }
 
-            for (int i = 0; i < rectangle.Width; i++)
+            for (int i = 0; i < img.Width; i++)
             {
                 LineSegment2D line = new LineSegment2D(new Point(i, 255), new Point(i, 255 - hist[i]));
                 if (hist[i] > 0) imageHist.Draw(line, black, 1);
@@ -175,30 +185,24 @@ namespace opencvChepai
             histbox1.Image = imageHist.ToBitmap();
             //绘制并显示
 
-            int[] hist2 = new int[rectangle.Height];
-            for (int i = 0; i < rectangle.Height; i++)
+            int[] hist2 = new int[img.Height];
+            for (int i = 0; i < img.Height; i++)
             {
                 int s = 0;
-                for (int j = 0; j < rectangle.Width; j++)
+                for (int j = 0; j < img.Width; j++)
                 {
-                    if (data[i + rectangle.Y, j + rectangle.X, 0] > 120) s++;
+                    if (data[i, j , 0] > 120) s++;
                 }
-                if (s > 24) hist2[i] = (Byte)(s); //滤除噪声
+                if (s > 24 && s < 90) hist2[i] = (Byte)(s); //滤除噪声
             }
 
-            Image<Bgr, Byte> imageHist2 = new Image<Bgr, Byte>(255, rectangle.Height, new Bgr(255d, 255d, 255d));
-            for (int i = 0; i < rectangle.Height; i++)
+            Image<Bgr, Byte> imageHist2 = new Image<Bgr, Byte>(255, img.Height, new Bgr(255d, 255d, 255d));
+            for (int i = 0; i < img.Height; i++)
             {
                 LineSegment2D line = new LineSegment2D(new Point(0, i), new Point(hist2[i], i));
                 if (hist2[i] > 0) imageHist.Draw(line, black, 1);
             }
             histBox2.Image = imageHist.ToBitmap();
-
-
-
-
-
-            return frame;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -233,8 +237,13 @@ namespace opencvChepai
         {
             Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString() + ".jpg");
             if (jpg < 4) jpg++;
-            chepaibox1.Image = img.ToBitmap();
-            getBox(img);
+            camerabox1.Image = img.ToBitmap();
+            Rectangle box = getBox(img);
+            var img2 = cut(img, box);
+            chepaibox1.Image = img2.ToBitmap();
+            var img3 = img2.Convert<Gray, Byte>();
+            hist(img3); 
+            
         }
 
         private void imageBox1_Click(object sender, EventArgs e)
