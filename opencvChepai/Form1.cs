@@ -127,7 +127,7 @@ namespace opencvChepai
             CvInvoke.cvThreshold(frame, frame, 0, 255, Emgu.CV.CvEnum.THRESH.CV_THRESH_OTSU);
 
             Byte[, ,] data = frame.Data;
-            Byte[] hist = new Byte[rectangle.Width];
+            int[] hist = new int[rectangle.Width];
 
             //绘制直方图
             Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(rectangle.Width, 255, new Bgr(255d, 255d, 255d));
@@ -142,13 +142,6 @@ namespace opencvChepai
                 if (s > 5) hist[i] = (Byte)(s); //滤除噪声
             }
 
-            for (int i = 0; i < rectangle.Height; i++)
-            {
-                for (int j = 0; j < rectangle.Width; j++)
-                {
-
-                }
-            }
             for (int i = 0; i < rectangle.Width; i++)
             {
                 if (hist[i] > 0)
@@ -177,9 +170,33 @@ namespace opencvChepai
             for (int i = 0; i < rectangle.Width; i++)
             {
                 LineSegment2D line = new LineSegment2D(new Point(i, 255), new Point(i, 255 - hist[i]));
-                imageHist.Draw(line, black, 1);
+                if (hist[i] > 0) imageHist.Draw(line, black, 1);
             }
             histbox1.Image = imageHist.ToBitmap();
+            //绘制并显示
+
+            int[] hist2 = new int[rectangle.Height];
+            for (int i = 0; i < rectangle.Height; i++)
+            {
+                int s = 0;
+                for (int j = 0; j < rectangle.Width; j++)
+                {
+                    if (data[i + rectangle.Y, j + rectangle.X, 0] > 120) s++;
+                }
+                if (s > 24) hist2[i] = (Byte)(s); //滤除噪声
+            }
+
+            Image<Bgr, Byte> imageHist2 = new Image<Bgr, Byte>(255, rectangle.Height, new Bgr(255d, 255d, 255d));
+            for (int i = 0; i < rectangle.Height; i++)
+            {
+                LineSegment2D line = new LineSegment2D(new Point(0, i), new Point(hist2[i], i));
+                if (hist2[i] > 0) imageHist.Draw(line, black, 1);
+            }
+            histBox2.Image = imageHist.ToBitmap();
+
+
+
+
 
             return frame;
         }

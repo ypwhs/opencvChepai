@@ -44,7 +44,7 @@
             this.pictureBox6 = new System.Windows.Forms.PictureBox();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.histbox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.histBox2 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.camerabox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chepaibox1)).BeginInit();
@@ -56,7 +56,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.histbox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.histBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // camerabox1
@@ -83,10 +83,10 @@
             // chepaibox1
             // 
             this.chepaibox1.BackColor = System.Drawing.Color.White;
-            this.chepaibox1.Location = new System.Drawing.Point(1318, 610);
+            this.chepaibox1.Location = new System.Drawing.Point(1318, 350);
             this.chepaibox1.Margin = new System.Windows.Forms.Padding(6);
             this.chepaibox1.Name = "chepaibox1";
-            this.chepaibox1.Size = new System.Drawing.Size(300, 88);
+            this.chepaibox1.Size = new System.Drawing.Size(150, 44);
             this.chepaibox1.TabIndex = 3;
             this.chepaibox1.TabStop = false;
             this.chepaibox1.Click += new System.EventHandler(this.imageBox2_Click);
@@ -197,19 +197,19 @@
             this.histbox1.Location = new System.Drawing.Point(1318, 88);
             this.histbox1.Margin = new System.Windows.Forms.Padding(6);
             this.histbox1.Name = "histbox1";
-            this.histbox1.Size = new System.Drawing.Size(300, 510);
+            this.histbox1.Size = new System.Drawing.Size(150, 250);
             this.histbox1.TabIndex = 14;
             this.histbox1.TabStop = false;
             // 
-            // pictureBox8
+            // histBox2
             // 
-            this.pictureBox8.BackColor = System.Drawing.Color.White;
-            this.pictureBox8.Location = new System.Drawing.Point(1630, 610);
-            this.pictureBox8.Margin = new System.Windows.Forms.Padding(6);
-            this.pictureBox8.Name = "pictureBox8";
-            this.pictureBox8.Size = new System.Drawing.Size(510, 88);
-            this.pictureBox8.TabIndex = 15;
-            this.pictureBox8.TabStop = false;
+            this.histBox2.BackColor = System.Drawing.Color.White;
+            this.histBox2.Location = new System.Drawing.Point(1480, 350);
+            this.histBox2.Margin = new System.Windows.Forms.Padding(6);
+            this.histBox2.Name = "histBox2";
+            this.histBox2.Size = new System.Drawing.Size(255, 44);
+            this.histBox2.TabIndex = 15;
+            this.histBox2.TabStop = false;
             // 
             // label1
             // 
@@ -226,7 +226,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2368, 1324);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.pictureBox8);
+            this.Controls.Add(this.histBox2);
             this.Controls.Add(this.histbox1);
             this.Controls.Add(this.pictureBox7);
             this.Controls.Add(this.pictureBox6);
@@ -255,7 +255,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.histbox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.histBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -278,7 +278,7 @@
         private System.Windows.Forms.PictureBox pictureBox6;
         private System.Windows.Forms.PictureBox pictureBox5;
         private System.Windows.Forms.PictureBox histbox1;
-        private System.Windows.Forms.PictureBox pictureBox8;
+        private System.Windows.Forms.PictureBox histBox2;
         private System.Windows.Forms.Label label1;
     }
 }
