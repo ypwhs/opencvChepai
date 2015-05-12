@@ -106,22 +106,24 @@ namespace opencvChepai
                     int area = (int)box.Width * box.Height;
                     if (area > 1000 && area < 10000)
                     {
+                        //面积不能太小也不能太大，可以根据摄像头距离适当调整
                         if ((3.0 < whRatio && whRatio < 4))
                         {
+                            //车牌比例为440:140=3.14,这里我们取3到4
                             //test.Draw(box, new Bgr(Color.Red), 2);
-                            //simage.Draw(box, new Bgr(Color.Red), 2);//CvInvoke.cvNamedWindow("dst");
+                            //simage.Draw(box, new Bgr(Color.Red), 2);
                             var img2 = cut(img, box);
                             chepaibox1.Image = img2.ToBitmap();
-                            MessageBox.Show(whRatio.ToString());
+                            //MessageBox.Show(whRatio.ToString());
                             break;
                         }
                     }
                 }
             }
-            //box.X += 2;
-            //box.Y += 2;
-            //box.Width -= 6;
-            //box.Height -= 6;
+            box.X += 2;
+            box.Y += 2;
+            box.Width -= 5;
+            box.Height -= 5;
             return box;
         }
 
@@ -135,6 +137,16 @@ namespace opencvChepai
             return frame;
         }
 
+        public Image<Gray, Byte> cut(Image<Gray, byte> image, Rectangle rectangle)
+        {
+            //重载了对灰度图的处理
+            var frame = image;//.Convert<Gray, Byte>();
+            frame.ROI = rectangle;
+            Image<Gray, Byte> cutimg = new Image<Gray, Byte>(rectangle.Width, rectangle.Height);
+            CvInvoke.cvCopy(frame.Ptr, cutimg.Ptr, IntPtr.Zero);
+            return frame;
+        }
+
         public void hist(Image<Gray, Byte> img){
             Byte[, ,] data = img.Data;
             int[] hist = new int[img.Width];
@@ -142,12 +154,23 @@ namespace opencvChepai
             //绘制直方图
             Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(img.Width, 255, new Bgr(255d, 255d, 255d));
             Bgr black = new Bgr(0d, 0d, 0d);
+            long average = 0;
+            for (int i = 0; i < img.Width; i++)
+            {
+                for (int j = 0; j < img.Height; j++)
+                {
+                    average += data[j, i, 0];
+                }
+            }
+            average /= img.Width;
+            average /= img.Height;
+
             for (int i = 0; i < img.Width; i++)
             {
                 int s = 0;
                 for (int j = 0; j < img.Height; j++)
                 {
-                    if (data[j , i, 0] > 120) s++;
+                    if (data[j, i, 0] > average) s++;
                 }
                 if (s > 5) hist[i] = (Byte)(s); //滤除噪声
             }
@@ -156,7 +179,7 @@ namespace opencvChepai
             {
                 if (hist[i] > 0)
                 {
-                    int yuzhi = 8; //设定阈值
+                    int yuzhi = 5; //设定阈值
                     int k = 0;
                     for (int j = 0; j < yuzhi && i + j < img.Width; j++)
                     {
@@ -203,6 +226,26 @@ namespace opencvChepai
                 if (hist2[i] > 0) imageHist.Draw(line, black, 1);
             }
             histBox2.Image = imageHist.ToBitmap();
+
+            //分割每个字的图案
+            int y = 0;
+            while (y < img.Height && hist2[y] == 0) y++;
+            int y2 = y;
+            while (y2 < img.Height && hist2[y2] > 0) y2++;
+            
+            int x = 0;
+            while (x < img.Width && hist[x] == 0) x++;
+            int x2 = x;
+            while(x2 < img.Width && hist[x2] > 0) x2++;
+            Rectangle rec1;
+            if (x > 0) x--;
+            if (y > 0) y--;
+            if (x2 < img.Width-1) x2++;
+            if (y2 < img.Height - 1) y2++;
+            rec1 = new Rectangle(x, y, x2 - x, y2 - y);
+            Image<Gray, Byte> imageThreshold = img.ThresholdBinary(new Gray(128), new Gray(255));
+            var pic1 = cut(imageThreshold, rec1);
+            pictureBox1.Image = pic1.ToBitmap();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -239,10 +282,11 @@ namespace opencvChepai
             if (jpg < 4) jpg++;
             camerabox1.Image = img.ToBitmap();
             Rectangle box = getBox(img);
-            var img2 = cut(img, box);
-            chepaibox1.Image = img2.ToBitmap();
-            var img3 = img2.Convert<Gray, Byte>();
-            hist(img3); 
+            var img_cut = cut(img, box);
+            var img_cut_gray = img_cut.Convert<Gray, Byte>();
+            Image<Gray, Byte> imageThreshold = img_cut_gray.ThresholdBinary(new Gray(128), new Gray(255));
+            chepaibox1.Image = imageThreshold.ToBitmap();
+            hist(img_cut_gray); 
             
         }
 
