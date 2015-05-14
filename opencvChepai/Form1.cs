@@ -120,10 +120,10 @@ namespace opencvChepai
                     }
                 }
             }
-            box.X += 2;
-            box.Y += 2;
-            box.Width -= 5;
-            box.Height -= 5;
+            //box.X += 2;
+            //box.Y += 1;
+            //box.Width -= 5;
+            //box.Height -= 5;
             return box;
         }
 
@@ -150,10 +150,45 @@ namespace opencvChepai
         public void hist(Image<Gray, Byte> img){
             Byte[, ,] data = img.Data;
             int[] hist = new int[img.Width];
-
-            //绘制直方图
-            Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(img.Width, 255, new Bgr(255d, 255d, 255d));
             Bgr black = new Bgr(0d, 0d, 0d);
+
+            //绘制y直方图
+            int[] hist2 = new int[img.Height];
+            for (int i = 0; i < img.Height; i++)
+            {
+                int s = 0;
+                for (int j = 0; j < img.Width; j++)
+                {
+                    if (data[i, j, 0] > 120) s++;
+                }
+                if (s > 24 && s < img.Width * 0.85) hist2[i] = (Byte)(s); //滤除噪声
+            }
+
+            Image<Bgr, Byte> imageHist2 = new Image<Bgr, Byte>(255, img.Height, new Bgr(255d, 255d, 255d));
+            for (int i = 0; i < img.Height; i++)
+            {
+                LineSegment2D line = new LineSegment2D(new Point(0, i), new Point(hist2[i], i));
+                if (hist2[i] > 0) imageHist2.Draw(line, black, 1);
+            }
+            histBox2.Image = imageHist2.ToBitmap();
+
+            int y = 0;
+            int y2 = 0;
+            while (y2 - y < 5 && y2 < img.Height)
+            {
+                y++;
+                while (y < img.Height && hist2[y] == 0) y+=1;
+                y2 = y + 1;
+                while (y2 < img.Height && (hist2[y2] > 0) | (hist2[y2 + 1] > 0)) y2 += 1;
+            }
+            if (y > 0) y--;
+            if (y2 < img.Height - 1) y2++;
+            //算出y的上下位置，并扩充各自一个像素
+            //在下面算x的时候就只统计y上下夹住的那部分
+
+
+            //绘制x直方图
+            Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(img.Width, 255, new Bgr(255d, 255d, 255d));
             long average = 0;
             for (int i = 0; i < img.Width; i++)
             {
@@ -168,18 +203,29 @@ namespace opencvChepai
             for (int i = 0; i < img.Width; i++)
             {
                 int s = 0;
-                for (int j = 0; j < img.Height; j++)
+                for (int j = y+1; j < y2-1; j++)    //从y的有效范围中统计
                 {
-                    if (data[j, i, 0] > average) s++;
+                    if (data[j, i, 0] > average) s++;//均值二值化
                 }
-                if (s > 5) hist[i] = (Byte)(s); //滤除噪声
+                if (s > 3 && s < (y2-y)*0.95) hist[i] = (Byte)(s); //滤除噪声
             }
+            //int histAverage = 0;//直方图x均值
+            //for (int i = 0; i < img.Width; i++)
+            //{
+            //    histAverage += hist[i];
+            //}
+            //histAverage /= img.Width;
+
+            //for (int i = 0; i < img.Width; i++)
+            //{
+            //    if (hist[i] < histAverage * 0.2) hist[i] = 0;
+            //}
 
             for (int i = 0; i < img.Width; i++)
             {
                 if (hist[i] > 0)
                 {
-                    int yuzhi = 5; //设定阈值
+                    int yuzhi = 8; //设定阈值
                     int k = 0;
                     for (int j = 0; j < yuzhi && i + j < img.Width; j++)
                     {
@@ -205,47 +251,35 @@ namespace opencvChepai
                 LineSegment2D line = new LineSegment2D(new Point(i, 255), new Point(i, 255 - hist[i]));
                 if (hist[i] > 0) imageHist.Draw(line, black, 1);
             }
+            LineSegment2D line2 = new LineSegment2D(new Point(0, 255 - img.Height), new Point(img.Width, 255 - img.Height));
+            imageHist.Draw(line2, new Bgr(0, 0, 255), 1);
             histbox1.Image = imageHist.ToBitmap();
-            //绘制并显示
+            //绘制并显示x直方图
 
-            int[] hist2 = new int[img.Height];
-            for (int i = 0; i < img.Height; i++)
-            {
-                int s = 0;
-                for (int j = 0; j < img.Width; j++)
-                {
-                    if (data[i, j , 0] > 120) s++;
-                }
-                if (s > 24 && s < 90) hist2[i] = (Byte)(s); //滤除噪声
-            }
 
-            Image<Bgr, Byte> imageHist2 = new Image<Bgr, Byte>(255, img.Height, new Bgr(255d, 255d, 255d));
-            for (int i = 0; i < img.Height; i++)
-            {
-                LineSegment2D line = new LineSegment2D(new Point(0, i), new Point(hist2[i], i));
-                if (hist2[i] > 0) imageHist.Draw(line, black, 1);
-            }
-            histBox2.Image = imageHist.ToBitmap();
 
-            //分割每个字的图案
-            int y = 0;
-            while (y < img.Height && hist2[y] == 0) y++;
-            int y2 = y;
-            while (y2 < img.Height && hist2[y2] > 0) y2++;
+            PictureBox[] pictureboxs = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7 };
             
-            int x = 0;
-            while (x < img.Width && hist[x] == 0) x++;
-            int x2 = x;
-            while(x2 < img.Width && hist[x2] > 0) x2++;
-            Rectangle rec1;
-            if (x > 0) x--;
-            if (y > 0) y--;
-            if (x2 < img.Width-1) x2++;
-            if (y2 < img.Height - 1) y2++;
-            rec1 = new Rectangle(x, y, x2 - x, y2 - y);
-            Image<Gray, Byte> imageThreshold = img.ThresholdBinary(new Gray(128), new Gray(255));
-            var pic1 = cut(imageThreshold, rec1);
-            pictureBox1.Image = pic1.ToBitmap();
+            int lastx = 0;
+            for (int i = 0; i < 7; i++)
+            {
+
+                //分割每个字的左右位置
+                int x = lastx;
+                while (x < img.Width && hist[x] == 0) x++;
+                int x2 = x;
+                while (x2 < img.Width && hist[x2] > 0) x2++;
+                lastx = x2;
+                Rectangle rec1;
+                if (x > 0) x--;
+                if (x2 < img.Width - 1) x2++;
+                
+                rec1 = new Rectangle(x, y, x2 - x, y2 - y);
+                Image<Gray, Byte> imageThreshold = img.ThresholdBinary(new Gray(128), new Gray(255));
+                var pic1 = cut(imageThreshold, rec1);
+                pic1 = pic1.Not();
+                pictureboxs[i].Image = pic1.ToBitmap();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -279,7 +313,7 @@ namespace opencvChepai
         private void button3_Click(object sender, EventArgs e)
         {
             Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString() + ".jpg");
-            if (jpg < 4) jpg++;
+            if (jpg < 5) jpg++;
             camerabox1.Image = img.ToBitmap();
             Rectangle box = getBox(img);
             var img_cut = cut(img, box);
