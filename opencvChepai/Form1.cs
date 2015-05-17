@@ -91,6 +91,8 @@ namespace opencvChepai
             //dest.Dilate(10);
             //dest.Erode(5);
             Rectangle box = new Rectangle(0, 0, 0, 0);
+            bool isFind = false;
+
             using (MemStorage stor = new MemStorage())
             {
                 Contour<Point> contours = dest1.FindContours(
@@ -104,7 +106,7 @@ namespace opencvChepai
                     //test.SetValue(255.0);
                     double whRatio = (double)box.Width / box.Height;
                     int area = (int)box.Width * box.Height;
-                    if (area > 1000 && area < 10000)
+                    if (area > 1000 && area < 20000)
                     {
                         //面积不能太小也不能太大，可以根据摄像头距离适当调整
                         if ((3.0 < whRatio && whRatio < 4))
@@ -114,22 +116,25 @@ namespace opencvChepai
                             //simage.Draw(box, new Bgr(Color.Red), 2);
                             var img2 = cut(img, box);
                             chepaibox1.Image = img2.ToBitmap();
+                            isFind = true;
                             //MessageBox.Show(whRatio.ToString());
                             break;
                         }
                     }
                 }
             }
-            //box.X += 2;
+            //box.X += 0;
             //box.Y += 1;
-            //box.Width -= 5;
+            //box.Width -= 4;
             //box.Height -= 5;
-            return box;
+            if (isFind) return box;
+            else return new Rectangle();
         }
-
+        int jpg = 1;
         public Image<Bgr, Byte> cut(Image<Bgr, byte> image, Rectangle rectangle)
         {
             //以矩形裁切图片
+            if ((rectangle.Width == 0) | (rectangle.Height == 0)) return image;
             var frame = image;//.Convert<Gray, Byte>();
             frame.ROI = rectangle;
             Image<Bgr, Byte> cutimg = new Image<Bgr, Byte>(rectangle.Width, rectangle.Height, new Bgr(255,255,255));
@@ -137,7 +142,7 @@ namespace opencvChepai
             return frame;
         }
 
-        public Image<Gray, Byte> cut(Image<Gray, byte> image, Rectangle rectangle)
+        public Image<Gray, Byte> cutGray(Image<Gray, byte> image, Rectangle rectangle)
         {
             //重载了对灰度图的处理
             var frame = image;//.Convert<Gray, Byte>();
@@ -152,6 +157,17 @@ namespace opencvChepai
             int[] hist = new int[img.Width];
             Bgr black = new Bgr(0d, 0d, 0d);
 
+            long average = 0;
+            for (int i = 0; i < img.Width; i++)
+            {
+                for (int j = 0; j < img.Height; j++)
+                {
+                    average += data[j, i, 0];
+                }
+            }
+            average /= img.Width;
+            average /= img.Height;
+
             //绘制y直方图
             int[] hist2 = new int[img.Height];
             for (int i = 0; i < img.Height; i++)
@@ -159,9 +175,9 @@ namespace opencvChepai
                 int s = 0;
                 for (int j = 0; j < img.Width; j++)
                 {
-                    if (data[i, j, 0] > 120) s++;
+                    if (data[i, j, 0] > average) s++;
                 }
-                if (s > 24 && s < img.Width * 0.85) hist2[i] = (Byte)(s); //滤除噪声
+                if (s > img.Width * 0.2 && s < img.Width * 0.85) hist2[i] = (Byte)(s); //滤除噪声
             }
 
             Image<Bgr, Byte> imageHist2 = new Image<Bgr, Byte>(255, img.Height, new Bgr(255d, 255d, 255d));
@@ -179,7 +195,7 @@ namespace opencvChepai
                 y++;
                 while (y < img.Height && hist2[y] == 0) y+=1;
                 y2 = y + 1;
-                while (y2 < img.Height && (hist2[y2] > 0) | (hist2[y2 + 1] > 0)) y2 += 1;
+                while (y2 < img.Height - 1 && (hist2[y2] > 0) | (hist2[y2 + 1] > 0)) y2 += 1;
             }
             if (y > 0) y--;
             if (y2 < img.Height - 1) y2++;
@@ -189,16 +205,7 @@ namespace opencvChepai
 
             //绘制x直方图
             Image<Bgr, Byte> imageHist = new Image<Bgr, Byte>(img.Width, 255, new Bgr(255d, 255d, 255d));
-            long average = 0;
-            for (int i = 0; i < img.Width; i++)
-            {
-                for (int j = 0; j < img.Height; j++)
-                {
-                    average += data[j, i, 0];
-                }
-            }
-            average /= img.Width;
-            average /= img.Height;
+
 
             for (int i = 0; i < img.Width; i++)
             {
@@ -207,37 +214,28 @@ namespace opencvChepai
                 {
                     if (data[j, i, 0] > average) s++;//均值二值化
                 }
-                if (s > 3 && s < (y2-y)*0.95) hist[i] = (Byte)(s); //滤除噪声
+                if (s > 2 && s < (y2-y)*0.9) hist[i] = (Byte)(s); //滤除噪声
             }
-            //int histAverage = 0;//直方图x均值
-            //for (int i = 0; i < img.Width; i++)
-            //{
-            //    histAverage += hist[i];
-            //}
-            //histAverage /= img.Width;
-
-            //for (int i = 0; i < img.Width; i++)
-            //{
-            //    if (hist[i] < histAverage * 0.2) hist[i] = 0;
-            //}
 
             for (int i = 0; i < img.Width; i++)
             {
                 if (hist[i] > 0)
                 {
-                    int yuzhi = 8; //设定阈值
-                    int k = 0;
+                    int yuzhi = 5; //设定阈值
+                    int k = 0, hs = 0;
                     for (int j = 0; j < yuzhi && i + j < img.Width; j++)
                     {
-                        if (hist[i + j] == 0) k = 1;
+                        hs += hist[i + j];
+                        if (hist[i + j] == 0 ) k = 1;
                     }
+                    if (hs < 20) k = 1; //整个内容太少可能是一个点
                     if (k == 0)
                     {
                         while (hist[i] > 0 && i < img.Width-1) i++;
                     }
                     else
                     {
-                        while (hist[i] > 0)
+                        while (hist[i] > 0 && i < img.Width - 1)
                         {
                             hist[i] = 0;
                             i++;
@@ -271,12 +269,12 @@ namespace opencvChepai
                 while (x2 < img.Width && hist[x2] > 0) x2++;
                 lastx = x2;
                 Rectangle rec1;
-                if (x > 0) x--;
+                if (x > 2) x-=1;
                 if (x2 < img.Width - 1) x2++;
                 
                 rec1 = new Rectangle(x, y, x2 - x, y2 - y);
                 Image<Gray, Byte> imageThreshold = img.ThresholdBinary(new Gray(128), new Gray(255));
-                var pic1 = cut(imageThreshold, rec1);
+                var pic1 = cutGray(imageThreshold, rec1);
                 pic1 = pic1.Not();
                 pictureboxs[i].Image = pic1.ToBitmap();
             }
@@ -309,19 +307,34 @@ namespace opencvChepai
             }
         }
 
-        int jpg = 1;
         private void button3_Click(object sender, EventArgs e)
         {
-            Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString() + ".jpg");
-            if (jpg < 5) jpg++;
-            camerabox1.Image = img.ToBitmap();
-            Rectangle box = getBox(img);
-            var img_cut = cut(img, box);
-            var img_cut_gray = img_cut.Convert<Gray, Byte>();
-            Image<Gray, Byte> imageThreshold = img_cut_gray.ThresholdBinary(new Gray(128), new Gray(255));
-            chepaibox1.Image = imageThreshold.ToBitmap();
-            hist(img_cut_gray); 
-            
+            if (jpg < 100) jpg++;
+            //try
+            {
+                Image<Bgr, Byte> img = new Image<Bgr, byte>(jpg.ToString() + ".jpg");
+                camerabox1.Image = img.ToBitmap();
+                Rectangle box = getBox(img);
+                if (box.Width > 0)
+                {
+                    var img_cut = cut(img, box);
+                    var img_cut_gray = img_cut.Convert<Gray, Byte>();
+                    Image<Gray, Byte> imageThreshold = img_cut_gray.ThresholdBinary(new Gray(128), new Gray(255));
+                    chepaibox1.Image = imageThreshold.ToBitmap();
+                    hist(img_cut_gray);
+                    label1.Text = jpg.ToString() + ".jpg";
+                }
+                else
+                {
+                    label1.Text = jpg.ToString() + ".jpg\n未找到车牌";
+                }
+            }
+            //catch (Exception ex)
+            {
+                //MessageBox.Show(ex.ToString());
+                //label1.Text = jpg.ToString() + ".jpg\n" + ex.ToString();
+            }
+
         }
 
         private void imageBox1_Click(object sender, EventArgs e)

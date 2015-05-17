@@ -194,10 +194,10 @@
             // histbox1
             // 
             this.histbox1.BackColor = System.Drawing.Color.White;
-            this.histbox1.Location = new System.Drawing.Point(1318, 88);
+            this.histbox1.Location = new System.Drawing.Point(1318, 72);
             this.histbox1.Margin = new System.Windows.Forms.Padding(6);
             this.histbox1.Name = "histbox1";
-            this.histbox1.Size = new System.Drawing.Size(150, 250);
+            this.histbox1.Size = new System.Drawing.Size(150, 266);
             this.histbox1.TabIndex = 14;
             this.histbox1.TabStop = false;
             // 
